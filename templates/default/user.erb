@@ -1,0 +1,12 @@
+# User configuration file created by Chef
+# Changes to this file will be overwritten after the
+# next chef-client run.
+#
+
+<% node['vsftpd']['users'].each do |config| %>
+  <% config.each do |option,value| %>
+    <% unless value.nil? or value.empty? %>
+<%= option %>=<%= value %>
+    <% end %>
+  <% end %>
+<% end %>
