@@ -1,0 +1,4 @@
+#%PAM-1.0
+auth    required        pam_userdb.so   db=<%= node['vsftpd']['etcdir'] %>/<%= node['vsftpd']['db4_file'] %>
+account required        pam_userdb.so   db=<%= node['vsftpd']['etcdir'] %>/<%= node['vsftpd']['db4_file'] %>
+session required        pam_loginuid.so
