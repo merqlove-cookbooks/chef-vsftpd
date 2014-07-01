@@ -16,3 +16,4 @@ Berksfile.lock
 .kitchen.local.yml
 
 .idea
+.ruby-version
