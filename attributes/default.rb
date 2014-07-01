@@ -13,6 +13,8 @@ default['vsftpd']['allowed'] = [ ]
 # Default: chroot all users but those defined here
 default['vsftpd']['chroot'] = [ ]
 
+default['vsftpd']['users'] = [ ]
+
 # Various configuration options with some sane defaults
 # For details on these please check the official documentation
 default['vsftpd']['config'] = {
