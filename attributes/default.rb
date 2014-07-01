@@ -13,7 +13,12 @@ default['vsftpd']['allowed'] = [ ]
 # Default: chroot all users but those defined here
 default['vsftpd']['chroot'] = [ ]
 
+# User custom configuration, hash array [{'name'=>'vivek','config'=>{'local_root'=>'/var/www/vivek'}}]
 default['vsftpd']['users'] = [ ]
+
+# Name of Berkley DB persist for virtual users
+default['vsftpd']['db4_file'] = 'virtual_users'
+default['vsftpd']['db4_file_ext'] = 'db'
 
 # Various configuration options with some sane defaults
 # For details on these please check the official documentation
