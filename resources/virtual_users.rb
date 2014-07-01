@@ -8,7 +8,7 @@ actions :create
 default_action :create
 
 attribute :name, :name_attribute => true, :kind_of => String
-attribute :password, :kind_of => [String, NilClass], :default => nil, :required => true # Password
+attribute :users, :kind_of => [Array, NilClass], :default => nil, :required => true # User credentials Hash array [{'login' => 'vivek', 'password' => 'secure_password' }, ...]
 
 def initialize(*args)
   super
