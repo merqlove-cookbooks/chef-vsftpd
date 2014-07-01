@@ -20,6 +20,9 @@ default['vsftpd']['users'] = [ ]
 default['vsftpd']['db4_file'] = 'virtual_users'
 default['vsftpd']['db4_file_ext'] = 'db'
 
+# Path to PAM's folder
+default['vsftpd']['pamdir'] = '/etc/pam.d'
+
 # Various configuration options with some sane defaults
 # For details on these please check the official documentation
 default['vsftpd']['config'] = {
