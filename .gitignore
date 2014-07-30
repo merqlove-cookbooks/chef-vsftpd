@@ -14,3 +14,5 @@ Berksfile.lock
 # Kitchen
 .kitchen/
 .kitchen.local.yml
+
+.idea
