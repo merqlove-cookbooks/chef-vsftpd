@@ -18,6 +18,7 @@ action :create do
     end
   
     template txt do
+      mode 00600
       source "virtual_users.txt.erb" 
       variables (
         :users => new_resource.users
@@ -25,7 +26,7 @@ action :create do
       action :create
       notifies :run, generate_db, :delayed
     end
-
+    
     new_resource.updated_by_last_action(true)
   end
 end
