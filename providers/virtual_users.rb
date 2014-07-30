@@ -6,7 +6,7 @@
 action :create do
   name = new_resource.name
   
-  Dir.mktmpdir do |dir|
+  ::Dir.mktmpdir do |dir|
     txt = "#{dir.to_s}/#{node['vsftpd']['db4_file']}.txt"
     db = "#{ node['vsftpd']['etc_dir'] }/#{ node['vsftpd']['db4_file'] }.#{ node['vsftpd']['db4_file_ext'] }"
     generator = "db_load -T -t hash -f #{txt} #{db} && chmod 0600 #{db}"
