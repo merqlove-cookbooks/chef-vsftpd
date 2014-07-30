@@ -1,30 +1,63 @@
 #
-# Cookbook Name:: chef-vsftpd
+# Cookbook Name:: vsftpd
 # Provider:: virtual_users
 #
 
 action :create do
   name = new_resource.name
 
-  ::Dir.mktmpdir do |dir|
-    txt = "#{dir}/#{node['vsftpd']['db4_file']}.txt"
-    db = "#{ node['vsftpd']['etc_dir'] }/#{ node['vsftpd']['db4_file'] }.#{ node['vsftpd']['db4_file_ext'] }"
-    generator = "db_load -T -t hash -f #{txt} #{db} && chmod 0600 #{db}"
+  txt = "#{::Chef::Config[:file_cache_path]}/#{node['vsftpd']['db4_file']}.txt"
+  db = "#{ node['vsftpd']['etc_dir'] }/#{ node['vsftpd']['db4_file'] }.#{ node['vsftpd']['db4_file_ext'] }"
+  generator = "db_load -T -t hash -f #{txt} #{db} && chmod 0600 #{db} && rm -f #{txt}"
 
-    generate_db = execute "generate-vsftpd-berkley-db-#{name}" do
-      action :nothing
-      command generator
+  generate_db = execute "generate-vsftpd-berkley-db-#{name}" do
+    action :nothing
+    command generator
+    notifies :restart, 'service[vsftpd]', :delayed
+  end
+
+  template txt do
+    cookbook new_resource.cookbook
+    source new_resource.template
+    mode 00600
+    variables users: new_resource.users
+    action :create
+    notifies :run, generate_db, :delayed
+  end
+
+  create_config(new_resource.users, new_resource.cookbook)
+  vsftpd_lists 'custom init'
+
+  new_resource.updated_by_last_action(true)
+end
+
+def create_config(users, cookbook)
+  return unless users
+
+  names=[]
+  users.each do |user|
+    names.push user['name']
+    template "#{node['vsftpd']['config']['user_config_dir']}/#{user['name']}" do
+      cookbook cookbook
+      source 'virtual_user_config.erb'
+      variables config: user['config']
       notifies :restart, 'service[vsftpd]', :delayed
     end
+    node.default['vsftpd']['allowed'].push(user['name'])
+  end
 
-    template txt do
-      mode 00600
-      source 'virtual_users.txt.erb'
-      variables users: new_resource.users
-      action :create
-      notifies :run, generate_db, :delayed
+  clean_config(names)
+end
+
+def clean_config(names)
+  return unless names
+
+  if ::Dir.exist? "#{node['vsftpd']['config']['user_config_dir']}"
+    ::Dir.foreach("#{node['vsftpd']['config']['user_config_dir']}") do |user|
+      next if user == '.' or user == '..'
+      unless names.include? user
+        ::File.delete("#{node['vsftpd']['config']['user_config_dir']}/#{user}")
+      end
     end
-    
-    new_resource.updated_by_last_action(true)
   end
 end

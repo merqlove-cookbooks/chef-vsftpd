@@ -18,13 +18,8 @@ config = value_for_platform_family(
   'debian' => '/etc/vsftpd.conf'
 )
 
-# rubocop:disable Style/LineLength,
-{ 'vsftpd.conf.erb' => config,
-  'vsftpd.chroot_list.erb' => node['vsftpd']['config']['chroot_list_file'],
-  'vsftpd.user_list.erb' => node['vsftpd']['config']['userlist_file'] }.each do |template, destination|
-  # rubocop:enable Style/LineLength
-  template destination do
-    source template
-    notifies :restart, 'service[vsftpd]', :delayed
-  end
+# rubocop:enable Style/LineLength
+template config do
+  source 'vsftpd.conf.erb'
+  notifies :restart, 'service[vsftpd]', :delayed
 end
