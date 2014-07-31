@@ -7,7 +7,7 @@ action :create do
   name = new_resource.name
 
   txt = "#{::Chef::Config[:file_cache_path]}/#{node['vsftpd']['db4_file']}.txt"
-  db = "#{ node['vsftpd']['etc_dir'] }/#{ node['vsftpd']['db4_file'] }.#{ node['vsftpd']['db4_file_ext'] }"
+  db = "#{node['vsftpd']['etcdir']}/#{node['vsftpd']['db4_file']}.#{node['vsftpd']['db4_file_ext']}"
   generator = "db_load -T -t hash -f #{txt} #{db} && chmod 0600 #{db} && rm -f #{txt}"
 
   generate_db = execute "generate-vsftpd-berkley-db-#{name}" do
