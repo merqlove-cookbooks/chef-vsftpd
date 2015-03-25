@@ -19,7 +19,7 @@ action :create do
   end
 
   old_sum = ::File.read("#{txt}_sum") if ::File.exist?("#{txt}_sum")
-  new_sum = ::Digest::SHA256.hexdigest new_resource.users
+  new_sum = ::Digest::SHA256.hexdigest new_resource.users.to_s
 
   file "#{txt}_sum" do
     cookbook new_resource.cookbook
