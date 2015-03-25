@@ -21,21 +21,24 @@ action :create do
   old_sum = ::File.read("#{txt}_sum") if ::File.exist?("#{txt}_sum")
   new_sum = ::Digest::SHA256.hexdigest new_resource.users.to_s
 
-  file "#{txt}_sum" do
-    cookbook new_resource.cookbook
-    content new_sum
-    only_if { old_sum != new_sum }
-  end
-
   template txt do
     cookbook new_resource.cookbook
     source new_resource.template
     mode 00600
     variables users: new_resource.users
-    action :create
-    only_if { old_sum != new_sum }
+    action :nothing
     notifies :run, generate_db, :delayed
   end
+
+  file "#{txt}_sum" do
+    mode 00600
+    content new_sum
+    action :create
+    only_if { old_sum != new_sum }
+    notifies :create, "template[#{txt}]"
+  end
+
+
 
   create_config(new_resource.users, new_resource.cookbook)
   vsftpd_lists 'custom init'
