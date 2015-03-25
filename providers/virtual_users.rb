@@ -3,6 +3,8 @@
 # Provider:: virtual_users
 #
 
+require 'digest'
+
 action :create do
   name = new_resource.name
 
@@ -16,12 +18,22 @@ action :create do
     notifies :restart, 'service[vsftpd]', :delayed
   end
 
+  old_sum = ::File.read("#{txt}_sum") if ::File.exist?("#{txt}_sum")
+  new_sum = ::Digest::SHA256.hexdigest new_resource.users
+
+  file "#{txt}_sum" do
+    cookbook new_resource.cookbook
+    content new_sum
+    only_if { old_sum != new_sum }
+  end
+
   template txt do
     cookbook new_resource.cookbook
     source new_resource.template
     mode 00600
     variables users: new_resource.users
     action :create
+    only_if { old_sum != new_sum }
     notifies :run, generate_db, :delayed
   end
 
