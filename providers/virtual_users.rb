@@ -25,6 +25,7 @@ action :create do
     cookbook new_resource.cookbook
     source new_resource.template
     mode 00600
+    sensitive true
     variables users: new_resource.users
     action :nothing
     notifies :run, generate_db, :delayed
