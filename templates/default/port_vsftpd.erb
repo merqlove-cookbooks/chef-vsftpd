@@ -1,0 +1,4 @@
+# Maintained by Chef.  Local changes will be overwritten
+
+-A FWR -p tcp -m tcp --dport 21 -j ACCEPT
+-A FWR -p tcp -m tcp --dport <%= node['vsftpd']['config']['pasv_min_port'] %>:<%= node['vsftpd']['config']['pasv_max_port'] %> -j ACCEPT
