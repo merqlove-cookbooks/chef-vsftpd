@@ -7,7 +7,7 @@ long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version           '0.2.0'
 recipe            'vsftpd::default', 'Installs/configures vsftpd'
 
-depends 'iptables', '~> 0.14.1'
+depends 'iptables'
 
 supports 'ubuntu'
 supports 'debian'
